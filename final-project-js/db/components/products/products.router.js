@@ -9,6 +9,7 @@ const router = express();
 
 //Routes
 router.get('/', productController.getAllProducts);
+router.post('/', productController.registerProduct);
 
 
 //Export

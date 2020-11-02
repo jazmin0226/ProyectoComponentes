@@ -8,12 +8,12 @@ const ProductModel = require('./products.model');
 class ProductController {
 
     getAllProducts (request, result){
-        ProductModel.find({}).exec((err, response) => {
+        ProductModel.find({state: true}).exec((err, response) => {
             if(err){
                 exceptionManager.connectionErrorData(result, 'Product', err);
             }
-            
-            exceptionManager.doneData(result, 'User', response);
+        
+            exceptionManager.doneData(result, 'Product', response);
             
         })
     }
@@ -25,7 +25,19 @@ class ProductController {
     registerProduct(request, result){
         const body = request.body;
         const newProduct = new ProductModel({
+            name: body.name,
+            color: body.color,
+            description: body.description
         });
+
+        newProduct.save(
+            (err, createdProduct) => {
+                if (err) {
+                    exceptionManager.connectionErrorData(result, 'Product', err);
+                }
+                exceptionManager.createdData(result, 'Product', err);
+            }
+        );
     }
 
     updateProduct (request, result){
