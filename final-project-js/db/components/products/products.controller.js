@@ -74,12 +74,22 @@ class ProductController {
 
     deleteProduct (request, result){
         const id = request.params.id;
-        const body = request.body;
 
        ProductModel.find({id: id}).exec((err, matchProducts) => {
         const matchProduct = matchProducts[0];
 
-        //matchProduct.deleteData(body);
+        if (err) {
+            exceptionManager.connectionErrorData(result, 'Product', err);
+        }
+
+        if(!matchProduct){
+            exceptionManager.badRequestData(result, 'Product');
+        }
+
+        matchProduct.updateState();
+
+        exceptionManager.doneData(result, 'Product', matchProduct);
+        
        })
     }
 }

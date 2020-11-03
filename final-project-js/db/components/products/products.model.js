@@ -46,8 +46,8 @@ productSchema.methods.updateData = function (pNewProductData) {
     }
 }
 
-productSchema.methods.deleteData = function (pProductData) {
-    
+productSchema.methods.updateState = function (pProductData) {
+   this.state = pProductData
 }
 
 // Export Model 
