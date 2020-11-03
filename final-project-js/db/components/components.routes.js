@@ -10,7 +10,7 @@ const router = express();
 
 //Routes
 router.use('/products', productRoutes);
-router.use('/users', userRoutes);
+
 
 
 //Export

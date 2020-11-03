@@ -36,9 +36,19 @@ const productSchema = new Schema({
 })
 
 //Product Schema Plugins Init
-productSchema.plugin(autoIncrement, {id: 'id_seq', inc_field: 'id'});
+productSchema.plugin(autoIncrement, {inc_field: 'id'});
 
+// Product Schema Methods
+productSchema.methods.updateData = function (pNewProductData) {
+    for (const key in pNewProductData) {
+        const currentData = pNewProductData[key];
+        this[key] = currentData;
+    }
+}
 
+productSchema.methods.deleteData = function (pProductData) {
+    
+}
 
 // Export Model 
 const ProductModel = mongoose.model('product', productSchema, 'products'); 
