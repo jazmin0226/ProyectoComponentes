@@ -2,13 +2,13 @@
 const exceptionManager = require('../shared/exceptions.shared');
 
 // Model
-const UserModel = require('./user.model');
+const UserModel = require('./users.model');
 
 // Controller
 class UserController {
 
     getAllUsers (request, result){
-        UserModel.find({state: true}).exec((err, response) => {
+        UserModel.find({}).exec((err, response) => {
             if(err){
                 exceptionManager.connectionErrorData(result, 'User', err);
             }

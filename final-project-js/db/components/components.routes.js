@@ -1,9 +1,9 @@
 //Dependencies
-const express = require('./users/node_modules/express');
+const express = require('express');
 
 //Routes Components
 const productRoutes = require('./products/products.router');
-const userRoutes = require('./users/user.router');
+const userRoutes = require('./users/users.router');
 
 //Router
 const router = express();
