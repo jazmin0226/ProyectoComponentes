@@ -1,5 +1,5 @@
 //Dependencies
-const exceptionManager = require('../shared/exceptions.shared');
+const exceptionManager = require('./../shared/exceptions.shared');
 
 // Model
 const ProductModel = require('./products.model');
@@ -7,91 +7,96 @@ const ProductModel = require('./products.model');
 // Controller
 class ProductController {
 
-    getAllProducts (request, result){
-        ProductModel.find({state: true}).exec((err, response) => {
-            if(err){
-                exceptionManager.connectionErrorData(result, 'Product', err);
-            }
-            exceptionManager.doneData(result, 'Product', response);
-        })
-    }
+  name = 'Product';
+  model = ProductModel;
 
-    getProductById (request, result){
-        const id = request.params.id;
-
-        ProductModel.find({id: id, state: true}).exec(
-            (err, response) => {
-            if(err){
-                exceptionManager.connectionErrorData(result, 'Product', err);
-            }
-            exceptionManager.doneData(result, 'Product', response);
-        })
-    }
-
-    registerProduct(request, result){
-        const body = request.body;
-        const newProduct = new ProductModel({
-            name: body.name,
-            color: body.color,
-            description: body.description
-        });
-
-        newProduct.save(
-            (err, createdProduct) => {
-                if (err) {
-                    exceptionManager.connectionErrorData(result, 'Product', err);
-                }
-                exceptionManager.createdData(result, 'Product', err);
-            }
-        );
-    }
-
-    updateProduct (request, result){
-        const id = request.params.id;
-        const body = request.body;
-
-       ProductModel.find({id: id}).exec((err, matchProducts) => {
-           const matchProduct = matchProducts[0];
-
-           if (err) {
-               exceptionManager.connectionErrorData(result, 'Product', err);
-           }
-
-           if (!matchProduct) {
-               exceptionManager.badRequestData(result, 'Product');
-           }
-
-           matchProduct.updateData(body);
-
-           matchProduct.save((saveErr, updateProduct) => {
-               if (saveErr) {
-                   exceptionManager.connectionErrorData(result, 'Product', saveErr);
-               }
-               exceptionManager.doneData(result, 'Product', updateProduct);
-           })
-       })
-    }
-
-    deleteProduct (request, result){
-        const id = request.params.id;
-
-       ProductModel.find({id: id}).exec((err, matchProducts) => {
-        const matchProduct = matchProducts[0];
-
+  getAll(request, result) {
+    this.model.find({
+      state: true
+    }).exec(
+      (err, response) => {
         if (err) {
-            exceptionManager.connectionErrorData(result, 'Product', err);
+          exceptionManager.connectionErrorData(result, this.name, err);
         }
+        exceptionManager.doneData(result, this.name, response);
+      });
+  }
 
-        if(!matchProduct){
-            exceptionManager.badRequestData(result, 'Product');
+  getById(request, result) {
+    const id = request.params.id;
+
+    this.model.find({
+      id: id,
+      state: true
+    }).exec((err, response) => {
+      if (err) {
+        exceptionManager.connectionErrorData(result, this.name, err);
+      }
+      exceptionManager.doneData(result, this.name, response);
+    });
+  }
+
+  register(request, result) {
+    const body = request.body;
+    const newProduct = new this.model(body);
+
+    newProduct.save((err, createdProduct) => {
+      if (err) {
+        exceptionManager.connectionErrorData(result, this.name, err);
+      }
+      exceptionManager.createdData(result, this.name, createdProduct);
+    });
+  }
+
+  update(request, result) {
+    const id = request.params.id;
+    const body = request.body;
+
+    this.model.find({
+      id: id
+    }).exec((err, matchProducts) => {
+      const matchProduct = matchProducts[0];
+
+      if (err) {
+        exceptionManager.connectionErrorData(result, this.name, err);
+      }
+
+      if (!matchProduct) {
+        exceptionManager.badRequestData(result, this.name);
+      }
+
+      matchProduct.updateData(body);
+
+      matchProduct.save((saveErr, updateProduct) => {
+        if (saveErr) {
+          exceptionManager.connectionErrorData(result, this.name, saveErr);
         }
+        exceptionManager.doneData(result, this.name, updateProduct);
+      });
+    });
+  }
 
-        matchProduct.updateState();
+  delete(request, result) {
+    const id = request.params.id;
 
-        exceptionManager.doneData(result, 'Product', matchProduct);
-        
-       })
-    }
+    this.model.find({
+      id: id
+    }).exec((err, matchProducts) => {
+      const matchProduct = matchProducts[0];
+
+      if (err) {
+        exceptionManager.connectionErrorData(result, this.name, err);
+      }
+
+      if (!matchProduct) {
+        exceptionManager.badRequestData(result, this.name);
+      }
+
+      matchProduct.updateState(false);
+
+      exceptionManager.doneData(result, this.name, matchProduct);
+    });
+  }
 }
 
 
