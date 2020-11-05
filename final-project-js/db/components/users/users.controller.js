@@ -1,4 +1,7 @@
 //Dependencies
+const {
+    set
+} = require('../products/products.router');
 const exceptionManager = require('../shared/exceptions.shared');
 
 // Model
@@ -7,50 +10,159 @@ const UserModel = require('./users.model');
 // Controller
 class UserController {
 
-    getAllUsers (request, result){
+    getAllUsers(request, result) {
         UserModel.find({}).exec((err, response) => {
-            if(err){
+            if (err) {
                 exceptionManager.connectionErrorData(result, 'User', err);
             }
-        
+
             exceptionManager.doneData(result, 'User', response);
-            
+
         })
     }
 
-    /*getUserById (request, result){
+    getUserById (request, result){
+        const id = request.params.id;
+        const body = request.body;
+
+        UserModel.find({
+            id: id
+        }).exec((err, matchUsers) => {
+            const matchUser = matchUsers[0];
+
+            if (err) {
+                exceptionManager.connectionErrorData(result, 'user', err);
+            }
+
+
+            if (!matchUser) {
+                exceptionManager.badRequestData(result, 'user');
+            }
+
+            exceptionManager.doneData(result, 'user', matchUser);
+        })
 
     }
 
-    registerProduct(request, result){
+    registerUser(request, result) {
         const body = request.body;
-        const newProduct = new ProductModel({
+        const newUser = new UserModel({
+
+            id: body.id,
+            type: body.type,
             name: body.name,
-            color: body.color,
-            description: body.description
+            phone: body.phone,
+            mail: body.mail,
+            address: body.address,
+            password: body.password,
+            state: body.state
         });
 
-        newProduct.save(
-            (err, createdProduct) => {
+        newUser.save(
+            (err) => {
                 if (err) {
-                    exceptionManager.connectionErrorData(result, 'Product', err);
+                    exceptionManager.connectionErrorData(result, 'User', err);
                 }
-                exceptionManager.createdData(result, 'Product', err);
+                exceptionManager.createdData(result, 'User', err);
             }
         );
     }
 
-    updateProduct (request, result){
+    updateUser(request, result) {
+
+        const id = request.params.id;
+        const body = request.body;
+
+        UserModel.find({
+            id: id
+        }).exec((err, matchUsers) => {
+            const matchUser = matchUsers[0];
+
+            if (err) {
+                exceptionManager.connectionErrorData(result, 'user', err);
+            }
+
+
+            if (!matchUser) {
+                exceptionManager.badRequestData(result, 'user');
+            }
+
+            matchUser.updateData(body);
+
+            matchUser.save((saveErr, updateUser) => {
+                if (saveErr) {
+                    exceptionManager.connectionErrorData(result, 'user', saveErr);
+                }
+                exceptionManager.doneData(result, 'user', updateUser);
+            })
+        });
+
 
     }
 
-    deleteProduct (request, result){
 
-    }*/
+    deleteUser(request, result) {
+
+        const id = request.params.id;
+        const body = request.body;
+
+        UserModel.find({
+            id: id
+        }).exec((err, matchUsers) => {
+            const matchUser = matchUsers[0];
+
+            if (err) {
+                exceptionManager.connectionErrorData(result, 'user', err);
+            }
+
+
+            if (!matchUser) {
+                exceptionManager.badRequestData(result, 'user');
+            }
+
+            matchUser.deleteData(false);
+
+            matchUser.save((saveErr, deleteUser) => {
+                if (saveErr) {
+                    exceptionManager.connectionErrorData(result, 'user', saveErr);
+                }
+                exceptionManager.doneData(result, 'user', deleteUser);
+            })
+            
+        });
+    }
+
+    enableUser(request, result) {
+
+        const id = request.params.id;
+        const body = request.body;
+
+        UserModel.find({
+            id: id
+        }).exec((err, matchUsers) => {
+            const matchUser = matchUsers[0];
+
+            if (err) {
+                exceptionManager.connectionErrorData(result, 'user', err);
+            }
+
+            if (!matchUser) {
+                exceptionManager.badRequestData(result, 'user');
+            }
+
+            matchUser.enableData(true);
+
+            matchUser.save((saveErr, enableUser) => {
+                if (saveErr) {
+                    exceptionManager.connectionErrorData(result, 'user', saveErr);
+                }
+                exceptionManager.doneData(result, 'user', enableUser);
+            })
+        });
+    }
 }
 
 
 //Export
 const controller = new UserController();
-
 module.exports = controller;
