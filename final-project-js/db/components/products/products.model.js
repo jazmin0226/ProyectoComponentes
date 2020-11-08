@@ -4,8 +4,6 @@ const mongoose = require('mongoose');
 //Mongoose Plugins
 const autoIncrement = require('mongoose-sequence')(mongoose);
 
-
-
 //Model data
 const Schema = mongoose.Schema;
 

@@ -2,49 +2,47 @@
 const exceptionManager = require('./../shared/exceptions.shared');
 
 // Model
-const ProductModel = require('./products.model');
+const model = require('./products.model');
+const name = 'Product';
 
 // Controller
 class ProductController {
-
-  name = 'Product';
-  model = ProductModel;
-
+  
   getAll(request, result) {
-    this.model.find({
+    model.find({
       state: true
     }).exec(
       (err, response) => {
         if (err) {
-          exceptionManager.connectionErrorData(result, this.name, err);
+          exceptionManager.connectionErrorData(result, name, err);
         }
-        exceptionManager.doneData(result, this.name, response);
+        exceptionManager.doneData(result, name, response);
       });
   }
 
   getById(request, result) {
     const id = request.params.id;
 
-    this.model.find({
+    model.find({
       id: id,
       state: true
     }).exec((err, response) => {
       if (err) {
-        exceptionManager.connectionErrorData(result, this.name, err);
+        exceptionManager.connectionErrorData(result, name, err);
       }
-      exceptionManager.doneData(result, this.name, response);
+      exceptionManager.doneData(result, name, response);
     });
   }
 
   register(request, result) {
     const body = request.body;
-    const newProduct = new this.model(body);
+    const newProduct = new model(body);
 
     newProduct.save((err, createdProduct) => {
       if (err) {
-        exceptionManager.connectionErrorData(result, this.name, err);
+        exceptionManager.connectionErrorData(result, name, err);
       }
-      exceptionManager.createdData(result, this.name, createdProduct);
+      exceptionManager.createdData(result, name, createdProduct);
     });
   }
 
@@ -52,26 +50,26 @@ class ProductController {
     const id = request.params.id;
     const body = request.body;
 
-    this.model.find({
+    model.find({
       id: id
     }).exec((err, matchProducts) => {
       const matchProduct = matchProducts[0];
 
       if (err) {
-        exceptionManager.connectionErrorData(result, this.name, err);
+        exceptionManager.connectionErrorData(result, name, err);
       }
 
       if (!matchProduct) {
-        exceptionManager.badRequestData(result, this.name);
+        exceptionManager.badRequestData(result, name);
       }
 
       matchProduct.updateData(body);
 
       matchProduct.save((saveErr, updateProduct) => {
         if (saveErr) {
-          exceptionManager.connectionErrorData(result, this.name, saveErr);
+          exceptionManager.connectionErrorData(result, name, saveErr);
         }
-        exceptionManager.doneData(result, this.name, updateProduct);
+        exceptionManager.doneData(result, name, updateProduct);
       });
     });
   }
@@ -79,22 +77,22 @@ class ProductController {
   delete(request, result) {
     const id = request.params.id;
 
-    this.model.find({
+    model.find({
       id: id
     }).exec((err, matchProducts) => {
       const matchProduct = matchProducts[0];
 
       if (err) {
-        exceptionManager.connectionErrorData(result, this.name, err);
+        exceptionManager.connectionErrorData(result, name, err);
       }
 
       if (!matchProduct) {
-        exceptionManager.badRequestData(result, this.name);
+        exceptionManager.badRequestData(result, name);
       }
 
       matchProduct.updateState(false);
 
-      exceptionManager.doneData(result, this.name, matchProduct);
+      exceptionManager.doneData(result, name, matchProduct);
     });
   }
 }
