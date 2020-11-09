@@ -2,10 +2,7 @@
 const mongoose = require('mongoose');
 
 //Mongoose Plugins
-const uniqueValidator = require('mongoose-unique-validator');
 const autoIncrement = require('mongoose-sequence')(mongoose);
-
-
 
 //Model data
 const Schema = mongoose.Schema;
@@ -36,9 +33,19 @@ const productSchema = new Schema({
 })
 
 //Product Schema Plugins Init
-productSchema.plugin(autoIncrement, {id: 'id_seq', inc_field: 'id'});
+productSchema.plugin(autoIncrement, {inc_field: 'id'});
 
+// Product Schema Methods
+productSchema.methods.updateData = function (pNewData) {
+    for (const key in pNewData) {
+        const currentData = pNewData[key];
+        this[key] = currentData;
+    }
+}
 
+productSchema.methods.updateState = function (pNewState) {
+   this.state = pNewState;
+}
 
 // Export Model 
 const ProductModel = mongoose.model('product', productSchema, 'products'); 
