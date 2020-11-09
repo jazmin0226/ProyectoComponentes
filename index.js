@@ -7,6 +7,10 @@ const serverConfig = require('dotenv').config();
 
 //Components
 const components = require('./components/components.routes');
+const port =  process.env.SERVER_PORT;
+const dbUser = process.env.DB_USER;
+const dbUrl = process.env.DB_URL;
+const dbPassword = process.env.DB_PASSWORD;
 
 //Contantes
 const app = express(); //Instancia actual de express
@@ -17,10 +21,10 @@ app.use(bodyParser.json());
 
 //Database conection
 mongoose.set('useCreateIndex', true);
-mongoose.connect(serverConfig.parsed.DB_URL, {
+mongoose.connect(dbUrl, {
   auth: {
-    user: serverConfig.parsed.DB_USER,
-    password: serverConfig.parsed.DB_PASSWORD
+    user: dbUser,
+    password: dbPassword
   },
 useNewUrlParser: true,
 useUnifiedTopology: true,
@@ -42,8 +46,8 @@ app.use((req, res, next) => {
 app.use('/', components);
 
 //Listener - SERVIDOR ya levantado
-app.listen(serverConfig.parsed.SERVER_PORT, () => {
-    console.log(serverConfig.parsed.SERVER_PORT);
+app.listen(port, () => {
+    console.log(port);
 })
 
 module.exports = app;
