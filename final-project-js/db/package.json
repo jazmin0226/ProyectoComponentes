@@ -1,21 +1,33 @@
 {
   "name": "db",
   "version": "1.0.0",
-  "description": "components",
+  "description": "RestApi",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js",
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jazmin0226/ProyectoComponentes.git"
   },
   "author": "Jazmin Arias",
   "license": "ISC",
+  "engines": {
+    "npm": "6.14.6",
+    "node": "12.18.4"
+  },
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
+    "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.10.11",
     "mongoose-sequence": "^5.3.0",
     "mongoose-unique-validator": "^2.0.3"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.6"
   }
 }

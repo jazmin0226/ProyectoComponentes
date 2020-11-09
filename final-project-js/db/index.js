@@ -3,12 +3,12 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const serverConfig = require('dotenv').config();
 
 //Components
 const components = require('./components/components.routes');
 
 //Contantes
-const port = 3000; //puerto para levantar localhost
 const app = express(); //Instancia actual de express
 
 //Body parser
@@ -17,10 +17,10 @@ app.use(bodyParser.json());
 
 //Database conection
 mongoose.set('useCreateIndex', true);
-mongoose.connect("mongodb://proyecto-componentes.mongo.cosmos.azure.com:10255/proyecto-componentes?ssl=true&replicaSet=globaldb", {
+mongoose.connect(serverConfig.parsed.DB_URL, {
   auth: {
-    user: "proyecto-componentes",
-    password: "faCoJ5tHtKhtg6KWCjVoM0EvhM7pjuCd1sKGCCLrqI7IKcIvrtuBX3ExNKIDwqZYUgd2MNlYEnvAhxrAJ3xs5w=="
+    user: serverConfig.parsed.DB_USER,
+    password: serverConfig.parsed.DB_PASSWORD
   },
 useNewUrlParser: true,
 useUnifiedTopology: true,
@@ -33,7 +33,8 @@ retryWrites: false
 app.use('/', components);
 
 //Listener - SERVIDOR ya levantado
-app.listen(port, () => {
-    console.log(port);
+app.listen(serverConfig.parsed.SERVER_PORT, () => {
+    console.log(serverConfig.parsed.SERVER_PORT);
 })
 
+module.exports = app;
