@@ -21,12 +21,13 @@ const orderSchema = new Schema({
         ref: 'product'
     },
     quantity: {
-        
+        type: [Number],
+        required: [true, 'La cantidad es requerida']
     },
 });
 
 
-// Sale Schema Methods
+// Order Schema Methods
 orderSchema.methods.updateData = function (pNewData){
     for (const key in pNewData){
         const currentData = pNewData[key];
@@ -38,6 +39,6 @@ orderSchema.methods.updateData = function (pNewData){
 orderSchema.plugin(autoIncrement, {id: 'id_order', inc_field: 'id' });
 
 // Export Model 
-const OrderModel = mongoose.model('order', orderSchema, 'orders');
+const Model = mongoose.model('order', orderSchema, 'orders');
 
-module.exports = OrderModel;
+module.exports = Model;
