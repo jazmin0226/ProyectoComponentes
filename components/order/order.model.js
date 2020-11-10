@@ -24,6 +24,11 @@ const orderSchema = new Schema({
         type: [Number],
         required: [true, 'La cantidad es requerida']
     },
+    state: {
+        type: Boolean,
+        default: true,
+        required: [true, 'el estado es requerido']
+    }
 });
 
 
