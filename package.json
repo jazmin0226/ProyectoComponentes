@@ -15,6 +15,7 @@
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.10.11",
+    "mongoose-bcrypt": "^1.9.0",
     "mongoose-sequence": "^5.3.0",
     "mongoose-unique-validator": "^2.0.3"
   }
