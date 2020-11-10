@@ -1,7 +1,4 @@
 //Dependencies
-const {
-    set
-} = require('../products/products.router');
 const exceptionManager = require('../shared/exceptions.shared');
 
 // Model
@@ -46,17 +43,9 @@ class UserController {
 
     registerUser(request, result) {
         const body = request.body;
-        const newUser = new UserModel({
-
-            id: body.id,
-            type: body.type,
-            name: body.name,
-            phone: body.phone,
-            mail: body.mail,
-            address: body.address,
-            password: body.password,
-            state: body.state
-        });
+        const newUser = new UserModel(
+            body
+        );
 
         newUser.save(
             (err) => {
@@ -76,7 +65,10 @@ class UserController {
         UserModel.find({
             id: id
         }).exec((err, matchUsers) => {
+            console.log(body);
+           
             const matchUser = matchUsers[0];
+            console.log(matchUser);
 
             if (err) {
                 exceptionManager.connectionErrorData(result, 'user', err);

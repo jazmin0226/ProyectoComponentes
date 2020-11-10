@@ -20,7 +20,8 @@ const userSchema = new Schema({
        
     },
     role: {
-        type: String,
+        type: mongoose.Types.ObjectId,
+        ref:'role',
         require: [true, "El rol es requerido"],
        
     },
