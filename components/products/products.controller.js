@@ -11,7 +11,7 @@ class ProductController {
   getAll(request, result) {
     model.find({
       state: true
-    }).exec(
+    }, '-_id -__v').exec(
       (err, response) => {
         if (err) {
           exceptionManager.connectionErrorData(result, name, err);
@@ -26,7 +26,7 @@ class ProductController {
     model.find({
       id: id,
       state: true
-    }).exec((err, response) => {
+    }, '-_id -__v').exec((err, response) => {
       if (err) {
         exceptionManager.connectionErrorData(result, name, err);
       }

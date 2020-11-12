@@ -11,7 +11,7 @@ class OrderController {
   getAll(request, result) {
     model.find({
       state: true
-    }).populate('product').exec(
+    }, '-_id -__v').populate('product').exec(
       (err, response) => {
         if (err) {
           exceptionManager.connectionErrorData(result, name, err);
@@ -26,7 +26,7 @@ class OrderController {
     model.find({
       id: id,
       state: true
-    }).populate('user').populate('product').exec(
+    }, '-_id -__v').populate('user').populate('product').exec(
       (err, response) => {
         if (err) {
           exceptionManager.connectionErrorData(result, name, err);
