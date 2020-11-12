@@ -33,7 +33,7 @@ const productSchema = new Schema({
 })
 
 //Product Schema Plugins Init
-productSchema.plugin(autoIncrement, {inc_field: 'id'});
+productSchema.plugin(autoIncrement, {id: 'id_product', inc_field: 'id'});
 
 // Product Schema Methods
 productSchema.methods.updateData = function (pNewData) {
