@@ -46,8 +46,8 @@ class ProductController {
     const id = request.params.id;
     const body = request.body;
 
-    model.findById(id).exec((err, matchProducts) => {
-      const matchProduct = matchProducts[0];
+    model.findById(id).exec((err, matchProduct) => {
+      console.log(matchProduct);
 
       if (err) {
         exceptionManager.connectionErrorData(result, name, err);
@@ -57,7 +57,12 @@ class ProductController {
         exceptionManager.badRequestData(result, name);
       }
 
-      matchProduct.updateData(body);
+      for (const key in body) {
+        const currentData = body[key];
+        matchProduct[key] = currentData;
+      }
+
+      //matchProduct.updateData(body);
 
       matchProduct.save((saveErr, updateProduct) => {
         if (saveErr) {

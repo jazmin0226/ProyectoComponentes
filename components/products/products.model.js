@@ -28,14 +28,7 @@ const productSchema = new Schema({
     }
 });
 
-// Product Schema Methods
-productSchema.methods.updateData = function (pNewData) {
-    for (const key in pNewData) {
-        const currentData = pNewData[key];
-        this[key] = currentData;
-    }
-}
-
+// Product Schema Method
 productSchema.methods.updateState = function (pNewState) {
    this.state = pNewState;
 }
