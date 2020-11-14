@@ -23,7 +23,7 @@ const userSchema = new Schema({
         type: mongoose.Types.ObjectId,
         ref:'role',
         require: [true, "El rol es requerido"],
-       
+        default: "5faa0c4592ed0f1dd893df26"
     },
     name: {
         type: String,
