@@ -10,8 +10,7 @@ class ProductController {
   
   getAll(request, result) {
     model.find({
-      state: true
-    }, '-_id -__v -state').exec(
+      state: true}, '-id -__v -state').exec(
       (err, response) => {
         if (err) {
           exceptionManager.connectionErrorData(result, name, err);
@@ -23,10 +22,7 @@ class ProductController {
   getById(request, result) {
     const id = request.params.id;
 
-    model.find({
-      id: id,
-      state: true
-    }, '-_id -__v').exec((err, response) => {
+    model.findById(id, '-__v').exec((err, response) => {
       if (err) {
         exceptionManager.connectionErrorData(result, name, err);
       }
@@ -50,9 +46,7 @@ class ProductController {
     const id = request.params.id;
     const body = request.body;
 
-    model.find({
-      id: id
-    }).exec((err, matchProducts) => {
+    model.findById(id).exec((err, matchProducts) => {
       const matchProduct = matchProducts[0];
 
       if (err) {

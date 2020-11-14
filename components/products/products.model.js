@@ -1,17 +1,13 @@
 //Dependecies
 const mongoose = require('mongoose');
 
-//Mongoose Plugins
-const autoIncrement = require('mongoose-sequence')(mongoose);
-
 //Model data
 const Schema = mongoose.Schema;
 
 const productSchema = new Schema({
     id: {
         type: Number,
-        require: [true, "El id es requerido"],
-        default: 0
+        default:0
     },
     name: {
         type: String,
@@ -30,10 +26,7 @@ const productSchema = new Schema({
         required: [true, "El estado es requerido"],
         default: true
     }
-})
-
-//Product Schema Plugins Init
-productSchema.plugin(autoIncrement, {id: 'id_product', inc_field: 'id'});
+});
 
 // Product Schema Methods
 productSchema.methods.updateData = function (pNewData) {
