@@ -24,6 +24,10 @@ const roleSchema = new Schema({
         default:true
        
     },
+    authentication: {
+        type:[String],
+        default:[]
+    }
    
 })
 //User Schema methods
