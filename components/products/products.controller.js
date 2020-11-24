@@ -5,7 +5,7 @@ const exceptionManager = require('./../shared/exceptions.shared');
 const model = require('./products.model');
 const name = 'Product';
 
-// Controller
+// Controller 
 class ProductController {
   
   getAll(request, result) {
