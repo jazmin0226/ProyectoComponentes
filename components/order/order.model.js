@@ -8,11 +8,6 @@ const autoIncrement = require('mongoose-sequence')(mongoose);
 const Schema = mongoose.Schema;
 
 const orderSchema = new Schema({
-    id: {
-        type: Number,
-        required: [true, "El id es requerido."],
-        default: 0
-    },
     user:{
         type: mongoose.Types.ObjectId
     },
@@ -40,8 +35,6 @@ orderSchema.methods.updateData = function (pNewData){
     }
 }
 
-//Plugins Init
-orderSchema.plugin(autoIncrement, {id: 'id_order', inc_field: 'id' });
 
 // Export Model 
 const Model = mongoose.model('order', orderSchema, 'orders');
