@@ -9,15 +9,16 @@ const Schema = mongoose.Schema;
 
 const orderSchema = new Schema({
     user:{
-        type: mongoose.Types.ObjectId
+        type: mongoose.Types.ObjectId,
+        require: [true, "El usuario es requerido"]
     },
     products: {
-        type: [mongoose.Types.ObjectId],
-        ref: 'product'
+        type: String,
+        require: [true, "los productos es requerido"]
     },
     quantity: {
-        type: [Number],
-        required: [true, 'La cantidad es requerida']
+        type: String,
+        require : [true, "la cantidad es requerida"]
     },
     state: {
         type: Boolean,

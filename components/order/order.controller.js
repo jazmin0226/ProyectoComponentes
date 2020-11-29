@@ -1,9 +1,11 @@
 //Dependencies
 const exceptionManager = require('./../shared/exceptions.shared');
+const azure = require('azure-storage');
 
 // Model
 const model = require('./order.model');
 const name = 'Order';
+const queueSvc = azure.createQueueService();
 
 // Controller
 class OrderController {
@@ -38,13 +40,21 @@ class OrderController {
   register(request, result) {
     const body = request.body;
     const newData = new model(body);
+    
 
     newData.save(
       (err, createdData) => {
         if (err) {
           exceptionManager.connectionErrorData(result, name, err);
         }
-        exceptionManager.createdData(result, name, createdData);
+
+        queueSvc.createQueueIfNotExists(`${createdData._id}-products`, function(error, results, response){
+          if(!error){
+            exceptionManager.createdData(result, name, createdData);
+          }
+        });
+
+        
       });
   }
 
