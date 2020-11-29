@@ -76,6 +76,14 @@ class Exceptions {
       };
       return response.status(404).json(errorData);
     }
+
+    acceptedLoginData(response, dataType) {
+      const errorData = {
+        state: true,
+        data: dataType
+      };
+      return response.status(202).json(errorData);
+    }
   }
   
   const exceptionsManager = new Exceptions();
