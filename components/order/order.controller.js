@@ -1,6 +1,10 @@
 //Dependencies
 const exceptionManager = require('./../shared/exceptions.shared');
 const azure = require('azure-storage');
+const {
+  QueueClient,
+  QueueServiceClient
+} = require("@azure/storage-queue");
 
 // Model
 const model = require('./order.model');
@@ -11,24 +15,39 @@ const queueSvc = azure.createQueueService();
 class OrderController {
 
   getAll(request, result) {
-    model.find({
-      state: true
-    }, '-_id -__v').populate('product').exec(
+    model.find({}, '-_id -__v').populate('user').exec(
       (err, response) => {
         if (err) {
           exceptionManager.connectionErrorData(result, name, err);
         }
-        exceptionManager.doneData(result, name, response);
-      })
+
+        queueSvc.getQueueMetadata('5fc741fff10be514d8e9481c-products', function (error, results, response) {
+          if (!error) {
+            let queueLenght = results.approximateMessageCount;
+            console.log(queueLenght);
+            console.log('-------------------');
+            queueSvc.getMessages('5fc741fff10be514d8e9481c-products', {
+              numOfMessages: queueLenght,
+              visibilityTimeout: 5 * 60
+            }, function (error, results, getResponse) {
+              if (!error) {
+                for (let index in results) {
+                  let message = results[index].messageText;
+                  console.log('message: ', message);
+
+                }
+              }
+            });
+          }
+        });
+      });
   }
+
 
   getById(request, result) {
     const id = request.params.id;
 
-    model.find({
-      id: id,
-      state: true
-    }, '-_id -__v').populate('user').populate('product').exec(
+    model.find('-_id -__v').populate('user').exec(
       (err, response) => {
         if (err) {
           exceptionManager.connectionErrorData(result, name, err);
@@ -40,7 +59,7 @@ class OrderController {
   register(request, result) {
     const body = request.body;
     const newData = new model(body);
-    
+    newData.products = `${newData._id}-products`;
 
     newData.save(
       (err, createdData) => {
@@ -48,13 +67,13 @@ class OrderController {
           exceptionManager.connectionErrorData(result, name, err);
         }
 
-        queueSvc.createQueueIfNotExists(`${createdData._id}-products`, function(error, results, response){
-          if(!error){
+        queueSvc.createQueueIfNotExists(newData.products, function (error, results, response) {
+          if (!error) {
             exceptionManager.createdData(result, name, createdData);
           }
         });
 
-        
+
       });
   }
 
@@ -62,28 +81,29 @@ class OrderController {
     const id = request.params.id;
     const body = request.body;
 
-    model.find({
-      id: id
-    }).exec((err, matchs) => {
-      const match = matchs[0];
-
+    model.findById(id).exec((err, match) => {
       if (err) {
         exceptionManager.connectionErrorData(result, name, err);
       }
-
 
       if (!match) {
         exceptionManager.badRequestData(result, name);
       }
 
-      match.updateData(body);
-
-      match.save((saveErr, updateData) => {
-        if (saveErr) {
-          exceptionManager.connectionErrorData(result, name, saveErr);
+      console.log(body.id);
+      queueSvc.createMessage(match.products, body.id, function (error, results, response) {
+        if (!error) {
+          // Message inserted
         }
-        exceptionManager.doneData(result, name, updateData);
-      })
+      });
+      // match.updateData(body);
+
+      // match.save((saveErr, updateData) => {
+      //   if (saveErr) {
+      //     exceptionManager.connectionErrorData(result, name, saveErr);
+      //   }
+      //   exceptionManager.doneData(result, name, updateData);
+      // })
     });
   }
 
@@ -99,7 +119,6 @@ class OrderController {
         exceptionManager.connectionErrorData(result, name, err);
       }
 
-
       if (!match) {
         exceptionManager.badRequestData(result, name);
       }
@@ -107,7 +126,6 @@ class OrderController {
       match.updateState(false);
 
       exceptionManager.doneData(result, name, match);
-
     });
   }
 }

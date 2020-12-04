@@ -10,7 +10,8 @@ const Schema = mongoose.Schema;
 const orderSchema = new Schema({
     user:{
         type: mongoose.Types.ObjectId,
-        require: [true, "El usuario es requerido"]
+        require: [true, "El usuario es requerido"],
+        ref: 'user'
     },
     products: {
         type: String,
@@ -21,9 +22,10 @@ const orderSchema = new Schema({
         require : [true, "la cantidad es requerida"]
     },
     state: {
-        type: Boolean,
-        default: true,
-        required: [true, 'el estado es requerido']
+        type: String,
+        default: "Enviado",
+        required: [true,'el estado es requerido'], 
+        enum: ["Pendiente","Enviado", "En proceso","Entregada"]
     }
 });
 
