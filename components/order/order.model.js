@@ -14,7 +14,7 @@ const orderSchema = new Schema({
         ref: 'user'
     },
     products: {
-        type: String,
+        type: Schema.Types.Mixed,
         require: [true, "los productos es requerido"]
     },
     quantity: {

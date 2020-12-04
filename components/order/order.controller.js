@@ -1,13 +1,11 @@
 //Dependencies
 const exceptionManager = require('./../shared/exceptions.shared');
+const getQueueData = require('../shared/queue.shared');
 const azure = require('azure-storage');
-const {
-  QueueClient,
-  QueueServiceClient
-} = require("@azure/storage-queue");
 
 // Model
 const model = require('./order.model');
+const productModel = require('./../products/products.model')
 const name = 'Order';
 const queueSvc = azure.createQueueService();
 
@@ -15,31 +13,28 @@ const queueSvc = azure.createQueueService();
 class OrderController {
 
   getAll(request, result) {
-    model.find({}, '-_id -__v').populate('user').exec(
-      (err, response) => {
+    model.find({}, '-id -v').populate('user', '-_id -_v').exec(
+      async (err, response) => {
         if (err) {
           exceptionManager.connectionErrorData(result, name, err);
         }
 
-        queueSvc.getQueueMetadata('5fc741fff10be514d8e9481c-products', function (error, results, response) {
-          if (!error) {
-            let queueLenght = results.approximateMessageCount;
-            console.log(queueLenght);
-            console.log('-------------------');
-            queueSvc.getMessages('5fc741fff10be514d8e9481c-products', {
-              numOfMessages: queueLenght,
-              visibilityTimeout: 5 * 60
-            }, function (error, results, getResponse) {
-              if (!error) {
-                for (let index in results) {
-                  let message = results[index].messageText;
-                  console.log('message: ', message);
+        for await (const order of response) {
+          const currentOrder = await getQueueData(order.products);
 
-                }
-              }
-            });
+          for (let i = 0; i < currentOrder.length; i++) {
+            const element = JSON.parse(currentOrder[i]);
+            let product = await {productModel}.findById(element.productId, '-id -_v');
+
+            element.productId = product;
+            currentOrder[i] = element;
           }
-        });
+
+          order.products = currentOrder;
+        }
+
+        exceptionManager.doneData(result, name, response);
+
       });
   }
 
@@ -47,7 +42,7 @@ class OrderController {
   getById(request, result) {
     const id = request.params.id;
 
-    model.find('-_id -__v').populate('user').exec(
+    model.find('-id -_v').populate('user').exec(
       (err, response) => {
         if (err) {
           exceptionManager.connectionErrorData(result, name, err);
