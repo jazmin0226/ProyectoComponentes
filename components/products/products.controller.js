@@ -1,5 +1,6 @@
 //Dependencies
 const exceptionManager = require('./../shared/exceptions.shared');
+const sendEmail = require('./../shared/email.shared');
 
 // Model
 const model = require('./products.model');
@@ -15,6 +16,12 @@ class ProductController {
         if (err) {
           exceptionManager.connectionErrorData(result, name, err);
         }
+
+        sendEmail({
+          to: 'guzmanmaria2775@gmail.com',
+          subject: 'test',
+          text: 'test'
+        })
         exceptionManager.doneData(result, name, response);
       });
   }

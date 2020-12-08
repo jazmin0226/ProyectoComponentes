@@ -24,7 +24,7 @@ class OrderController {
 
           for (let i = 0; i < currentOrder.length; i++) {
             const element = JSON.parse(currentOrder[i]);
-            let product = await {productModel}.findById(element.productId, '-id -_v');
+            let product = await productModel.findById(element.productId, '-id -_v');
 
             element.productId = product;
             currentOrder[i] = element;
@@ -34,7 +34,6 @@ class OrderController {
         }
 
         exceptionManager.doneData(result, name, response);
-
       });
   }
 

@@ -23,9 +23,9 @@ const orderSchema = new Schema({
     },
     state: {
         type: String,
-        default: "Enviado",
+        default: "Creada",
         required: [true,'el estado es requerido'], 
-        enum: ["Pendiente","Enviado", "En proceso","Entregada"]
+        enum: ["Creada","Pendiente","Enviado", "En proceso","Entregada"]
     }
 });
 

@@ -15,7 +15,7 @@ async function getQueueData(queueId) {
           const queueLenght = results.approximateMessageCount;
           const getQueueData = {
             numOfMessages: queueLenght,
-            visibilityTimeout = 1
+            visibilityTimeout: 1
           }
 
           queueSvc.getMessages(queueId, getQueueData,
@@ -28,7 +28,6 @@ async function getQueueData(queueId) {
                 resolve(productData);
               }
             });
-
         }
       });
   });
