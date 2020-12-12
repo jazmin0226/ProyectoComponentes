@@ -22,7 +22,11 @@ async function getQueueData(queueId) {
             function (error, results, getResponse) {
               if (!error) {
                 for (let index in results) {
-                  let message = results[index].messageText;
+                  const message = {
+                    id: results[index].messageId,
+                    content: results[index].messageText,
+                    popReceipt: results[index].popReceipt
+                  };
                   productData.push(message);
                 }
                 resolve(productData);

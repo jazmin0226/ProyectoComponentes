@@ -8,11 +8,18 @@ const controller = require('./order.controller');
 const router = express();
 
 //Routes
-router.get('/', controller.getAll);
-router.get('/:id', controller.getById);
+router.get('/', controller.getAll); 
 router.post('/', controller.register);
-router.put ('/:id', controller.update);
+
+// router.get('/:id', controller.getById);
+router.put('/:id', controller.update);
 router.delete('/:id', controller.delete);
+router.get('/:userid', controller.getByUser);
+
+router.put('/updatestate/:id', controller.updateState);
+router.patch('/updateorder', controller.updateOrder);
+router.delete('/delete/:id', controller.deleteProduct);
+
 
 
 //Export

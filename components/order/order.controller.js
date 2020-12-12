@@ -5,7 +5,7 @@ const azure = require('azure-storage');
 
 // Model
 const model = require('./order.model');
-const productModel = require('./../products/products.model')
+const productModel = require('./../products/products.model');
 const name = 'Order';
 const queueSvc = azure.createQueueService();
 
@@ -13,7 +13,7 @@ const queueSvc = azure.createQueueService();
 class OrderController {
 
   getAll(request, result) {
-    model.find({}, '-id -v').populate('user', '-_id -_v').exec(
+    model.find({state: {$in: ["Pendiente", "Enviado","Entregado"]}}, '-id -v').populate('user', '-_id -_v').exec(
       async (err, response) => {
         if (err) {
           exceptionManager.connectionErrorData(result, name, err);
@@ -21,22 +21,22 @@ class OrderController {
 
         for await (const order of response) {
           const currentOrder = await getQueueData(order.products);
-
+          
           for (let i = 0; i < currentOrder.length; i++) {
-            const element = JSON.parse(currentOrder[i]);
-            let product = await productModel.findById(element.productId, '-id -_v');
-
-            element.productId = product;
-            currentOrder[i] = element;
+            if(currentOrder[i] !== ''){
+              const element = JSON.parse(currentOrder[i].content);
+              let product = await productModel.findById(element.productId, '-id -_v');
+  
+              element.productId = product;
+              currentOrder[i] = element;
+            }
           }
-
           order.products = currentOrder;
         }
 
         exceptionManager.doneData(result, name, response);
       });
   }
-
 
   getById(request, result) {
     const id = request.params.id;
@@ -48,6 +48,34 @@ class OrderController {
         }
         exceptionManager.doneData(result, name, response);
       })
+  }
+
+  getByUser(request, result){
+    const userId = request.params.userid;
+
+    model.find({user: userId}, '-id -v').populate('user', '-_id -_v').exec(
+      async (err, response) => {
+        if (err) {
+          exceptionManager.connectionErrorData(result, name, err);
+        }
+
+        for await (const order of response) {
+          const currentOrder = await getQueueData(order.products);
+          
+          for (let i = 0; i < currentOrder.length; i++) {
+            if(currentOrder[i] !== ''){
+              const element = JSON.parse(currentOrder[i].content);
+              let product = await productModel.findById(element.productId, '-id -_v');
+  
+              element.productId = product;
+              currentOrder[i] = element;
+            }
+          }
+          order.products = currentOrder;
+        }
+
+        exceptionManager.doneData(result, name, response);
+      });
   }
 
   register(request, result) {
@@ -101,6 +129,51 @@ class OrderController {
     });
   }
 
+  updateOrder(request, result) {
+    const orderId = request.body.orderId;
+    const productId = request.body.productId;
+    const quantity = request.body.quantity;
+
+  
+    model.findById({_id: orderId}).exec(async (err, order) => {
+      if (err) {
+        exceptionManager.connectionErrorData(result, name, err);
+      }
+
+      if (!order) {
+        exceptionManager.badRequestData(result, name);
+      }
+      
+      const currentOrder = await getQueueData(order.products);
+      
+      for (let i = 0; i < currentOrder.length; i++) {
+        if(currentOrder[i] !== ''){
+          const element = JSON.parse(currentOrder[i].content);
+          console.log('normal', element); 
+          if (element.productId === productId) {
+            element.quantity = quantity;
+
+            const modified = JSON.stringify(element);
+            queueSvc.updateMessage(
+              order.products, 
+              currentOrder[i].id, 
+              currentOrder[i].popReceipt, 
+              1,
+              {messageText: modified}, 
+              function(error, updateResults, updateResponse){
+                if(!error){
+                  exceptionManager.doneData(result, name, updateResults);
+                }
+              });
+          }
+          currentOrder[i] = element;
+        }
+      }
+      
+      console.log('modificado',currentOrder); 
+    });
+  }
+
   delete(request, result) {
     const id = request.params.id;
 
@@ -122,8 +195,72 @@ class OrderController {
       exceptionManager.doneData(result, name, match);
     });
   }
-}
 
+  updateState(request, result){
+    const id = request.params.id;
+    const state = request.body.state;
+
+    model.findById({_id: id}).exec((err, match) => {
+      if(err){
+        exceptionManager.connectionErrorData(result, name, err);
+      }
+
+      if(!match) {
+        exceptionManager.doneData(result, name, match);
+      }
+      
+      match.updateState(state);
+      match.save(
+        (err, updatedData) => {
+          if (err) {
+            exceptionManager.connectionErrorData(result, name, err);
+          }
+          exceptionManager.doneData(result, name, updatedData);
+        });
+    });
+  }
+
+  sendEmail(request, result){
+    const id = request.params.id;
+    
+    
+  }
+
+  deleteProduct(request, result) {
+    const orderId = request.params.id;
+    const productId = request.body.productId;
+  
+    model.findById({_id: orderId}).exec(async (err, order) => {
+      if (err) {
+        exceptionManager.connectionErrorData(result, name, err);
+      }
+
+      if (!order) {
+        exceptionManager.badRequestData(result, name);
+      }
+      
+      const currentOrder = await getQueueData(order.products);
+      
+      for (let i = 0; i < currentOrder.length; i++) {
+        if(currentOrder[i] !== ''){
+          const element = JSON.parse(currentOrder[i].content);
+
+          if (element.productId === productId) {
+            queueSvc.deleteMessage(
+              order.products, 
+              currentOrder[i].id, 
+              currentOrder[i].popReceipt,
+              function(error, deleteResponse){
+                if(!error){
+                  exceptionManager.acceptedData(result, name);
+                }
+              });
+          }
+        }
+      }
+    });
+  }
+}
 
 //Export
 const controller = new OrderController();

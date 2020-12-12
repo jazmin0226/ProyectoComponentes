@@ -25,7 +25,7 @@ const orderSchema = new Schema({
         type: String,
         default: "Creada",
         required: [true,'el estado es requerido'], 
-        enum: ["Creada","Pendiente","Enviado", "En proceso","Entregada"]
+        enum: ["Creada","Pendiente","Enviado", "Entregado"]
     }
 });
 
@@ -38,6 +38,9 @@ orderSchema.methods.updateData = function (pNewData){
     }
 }
 
+orderSchema.methods.updateState = function (pnewState){
+    this.state = pnewState;
+}
 
 // Export Model 
 const Model = mongoose.model('order', orderSchema, 'orders');
