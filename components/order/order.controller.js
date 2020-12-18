@@ -78,7 +78,7 @@ class OrderController {
       });
   }
 
-  getOrdersUserState(request, result){
+  getOrdersUserPending(request, result){
     const userId = request.params.id;
     
     model.find({

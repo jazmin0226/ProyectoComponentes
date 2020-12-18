@@ -15,7 +15,7 @@ router.post('/', controller.register);
 router.put('/:id', controller.update);
 router.delete('/:id', controller.delete);
 router.get('/:userid', controller.getByUser);
-router.get('/userstate/:id', controller.getOrdersUserState);
+router.get('/statepending/:id', controller.getOrdersUserPending);
 router.get('/statecreated/:id', controller.getOrdersUserCreated);
 router.get('/statesent/:id', controller.getOrdersUserSent);
 router.get('/statedelivered/:id', controller.getOrdersUserDelivered);
