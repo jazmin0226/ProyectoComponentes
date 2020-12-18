@@ -30,7 +30,9 @@ class LoginController {
 
       const token = jwt.sign({ user: userValidate }, 'hard_seed-code', { expiresIn: 14400 });
 
-      exceptionManager.acceptedData(result, token);
+      const data = {token, user : userValidate};
+
+      exceptionManager.acceptedLoginData(result, data);
       
     });
   }

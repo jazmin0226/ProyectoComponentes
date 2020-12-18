@@ -9,20 +9,23 @@ const Schema = mongoose.Schema;
 
 const orderSchema = new Schema({
     user:{
-        type: mongoose.Types.ObjectId
+        type: mongoose.Types.ObjectId,
+        require: [true, "El usuario es requerido"],
+        ref: 'user'
     },
     products: {
-        type: [mongoose.Types.ObjectId],
-        ref: 'product'
+        type: Schema.Types.Mixed,
+        require: [true, "los productos es requerido"]
     },
     quantity: {
-        type: [Number],
-        required: [true, 'La cantidad es requerida']
+        type: String,
+        require : [true, "la cantidad es requerida"]
     },
     state: {
-        type: Boolean,
-        default: true,
-        required: [true, 'el estado es requerido']
+        type: String,
+        default: "Creado",
+        required: [true,'el estado es requerido'], 
+        enum: ["Creado","Pendiente","Enviado", "Entregado"]
     }
 });
 
@@ -35,6 +38,9 @@ orderSchema.methods.updateData = function (pNewData){
     }
 }
 
+orderSchema.methods.updateState = function (pnewState){
+    this.state = pnewState;
+}
 
 // Export Model 
 const Model = mongoose.model('order', orderSchema, 'orders');
