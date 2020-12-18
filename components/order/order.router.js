@@ -17,6 +17,7 @@ router.delete('/:id', controller.delete);
 router.get('/:userid', controller.getByUser);
 router.get('/userstate/:id', controller.getOrdersUserState);
 router.get('/statecreated/:id', controller.getOrdersUserCreated);
+router.get('/statesent/:id', controller.getOrdersUserSent);
 
 router.put('/updatestate/:id', controller.updateState);
 router.patch('/updateorder', controller.updateOrder);
