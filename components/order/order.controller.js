@@ -82,7 +82,7 @@ class OrderController {
     const userId = request.params.id;
     
     model.find({
-      user: userId,
+      user: userId,//admin sin esto solo busca x estado
       state: {$in:'Pendiente'} 
     }, '-id -v').populate('user', '-_id -_v').exec(
       async (err, response) => {
@@ -108,6 +108,38 @@ class OrderController {
         exceptionManager.doneData(result, name, response);
       });
   }
+
+  getOrdersUserCreated(request, result){
+    const userId = request.params.id;
+    
+    model.find({
+      user: userId,//admin sin esto solo busca x estado
+      state: {$in:'Creado'} 
+    }, '-id -v').populate('user', '-_id -_v').exec(
+      async (err, response) => {
+        if (err) {
+          exceptionManager.connectionErrorData(result, name, err);
+        }
+
+        for await (const order of response) {
+          const currentOrder = await getQueueData(order.products);
+          
+          for (let i = 0; i < currentOrder.length; i++) {
+            if(currentOrder[i] !== ''){
+              const element = JSON.parse(currentOrder[i].content);
+              let product = await productModel.findById(element.productId, '-id -_v');
+  
+              element.productId = product;
+              currentOrder[i] = element;
+            }
+          }
+          order.products = currentOrder;
+        }
+
+        exceptionManager.doneData(result, name, response);
+      });
+  }
+
 
 
   register(request, result) {
