@@ -15,6 +15,7 @@ router.post('/', controller.register);
 router.put('/:id', controller.update);
 router.delete('/:id', controller.delete);
 router.get('/:userid', controller.getByUser);
+router.get('/userstate/:id', controller.getOrdersUserState);
 
 router.put('/updatestate/:id', controller.updateState);
 router.patch('/updateorder', controller.updateOrder);
