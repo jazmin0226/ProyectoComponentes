@@ -20,7 +20,5 @@ router.put('/updatestate/:id', controller.updateState);
 router.patch('/updateorder', controller.updateOrder);
 router.delete('/delete/:id', controller.deleteProduct);
 
-
-
 //Export
 module.exports = router;
