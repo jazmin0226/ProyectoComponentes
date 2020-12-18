@@ -11,7 +11,7 @@ const router = express();
 router.get('/', controller.getAll); 
 router.post('/', controller.register);
 
-// router.get('/:id', controller.getById);
+router.post('/:id', controller.sendEmail);
 router.put('/:id', controller.update);
 router.delete('/:id', controller.delete);
 router.get('/:userid', controller.getByUser);
