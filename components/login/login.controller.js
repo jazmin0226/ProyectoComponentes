@@ -28,9 +28,9 @@ class LoginController {
 
       delete userValidate.password;
 
-      const token = jwt.sign({ user: userValidate }, 'hard_seed-code', { expiresIn: 14400 });
+      //const token = jwt.sign({ user: userValidate }, 'hard_seed-code', { expiresIn: 14400 });
 
-      const data = {token, user : userValidate};
+      const data = {user : userValidate};
 
       exceptionManager.acceptedLoginData(result, data);
       
