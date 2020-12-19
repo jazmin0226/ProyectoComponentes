@@ -20,16 +20,35 @@ class UserController {
 
         })
     }
-
+    
     getUserById (request, result){
         const id = request.params.id;
-        const body = request.body;
 
         UserModel.find({
             id: id
         }).exec((err, matchUsers) => {
             const matchUser = matchUsers[0];
 
+            if (err) {
+                exceptionManager.connectionErrorData(result, 'user', err);
+            }
+
+
+            if (!matchUser) {
+                exceptionManager.badRequestData(result, 'user');
+            }
+
+            exceptionManager.doneData(result, 'user', matchUser);
+        })
+
+    }
+
+    getUserByObjectId (request, result){
+        const id = request.params.object;
+
+        UserModel.findById({
+            _id: id
+        }).exec((err, matchUser) => {
             if (err) {
                 exceptionManager.connectionErrorData(result, 'user', err);
             }

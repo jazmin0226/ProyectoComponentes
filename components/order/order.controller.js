@@ -288,6 +288,7 @@ class OrderController {
   }
 
   getOrdersAdminDelivered(request, result){
+   
     model.find({
       state: {$in:'Entregado'} 
     }, '-id -v').populate('user', '-_id -_v').exec(

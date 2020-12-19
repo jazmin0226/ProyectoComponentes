@@ -15,5 +15,7 @@ router.delete('/:id', userController.deleteUser);
 router.unlock('/:id', userController.enableUser);
 router.get('/:id', userController.getUserById);
 
+// router.get('object', userController.getUserByObjectId);
+
 //Export
 module.exports = router;
