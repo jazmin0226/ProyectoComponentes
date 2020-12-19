@@ -203,6 +203,62 @@ class OrderController {
       });
   }
 
+  getOrdersAdminPending(request, result){
+    model.find({
+      state: {$in:'Pendiente'} 
+    }, '-id -v').populate('user', '-_id -_v').exec(
+      async (err, response) => {
+        if (err) {
+          exceptionManager.connectionErrorData(result, name, err);
+        }
+
+        for await (const order of response) {
+          const currentOrder = await getQueueData(order.products);
+          
+          for (let i = 0; i < currentOrder.length; i++) {
+            if(currentOrder[i] !== ''){
+              const element = JSON.parse(currentOrder[i].content);
+              let product = await productModel.findById(element.productId, '-id -_v');
+  
+              element.productId = product;
+              currentOrder[i] = element;
+            }
+          }
+          order.products = currentOrder;
+        }
+
+        exceptionManager.doneData(result, name, response);
+      });
+  }
+
+  getOrdersAdminCreated(request, result){
+    model.find({
+      state: {$in:'Creado'} 
+    }, '-id -v').populate('user', '-_id -_v').exec(
+      async (err, response) => {
+        if (err) {
+          exceptionManager.connectionErrorData(result, name, err);
+        }
+
+        for await (const order of response) {
+          const currentOrder = await getQueueData(order.products);
+          
+          for (let i = 0; i < currentOrder.length; i++) {
+            if(currentOrder[i] !== ''){
+              const element = JSON.parse(currentOrder[i].content);
+              let product = await productModel.findById(element.productId, '-id -_v');
+  
+              element.productId = product;
+              currentOrder[i] = element;
+            }
+          }
+          order.products = currentOrder;
+        }
+
+        exceptionManager.doneData(result, name, response);
+      });
+  }
+
   register(request, result) {
     const body = request.body;
     const newData = new model(body);
