@@ -15,6 +15,15 @@ router.post('/:id', controller.sendEmail);
 router.put('/:id', controller.update);
 router.delete('/:id', controller.delete);
 router.get('/:userid', controller.getByUser);
+router.get('/statepending/:id', controller.getOrdersUserPending);
+router.get('/statecreated/:id', controller.getOrdersUserCreated);
+router.get('/statesent/:id', controller.getOrdersUserSent);
+router.get('/statedelivered/:id', controller.getOrdersUserDelivered);
+router.get('/all/pending', controller.getOrdersAdminPending);
+router.get('/all/created', controller.getOrdersAdminCreated);
+router.get('/all/sent', controller.getOrdersAdminSent);
+router.get('/all/delivered', controller.getOrdersAdminDelivered);
+
 
 router.put('/updatestate/:id', controller.updateState);
 router.patch('/updateorder', controller.updateOrder);

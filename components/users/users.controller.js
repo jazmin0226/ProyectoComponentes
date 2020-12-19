@@ -8,7 +8,10 @@ const UserModel = require('./users.model');
 class UserController {
 
     getAllUsers(request, result) {
-        UserModel.find({},'-_id -password -state -__v').populate('role').exec((err, response) => {
+        UserModel.find({
+            role: '5faa0c4592ed0f1dd893df26',
+            state: true
+        },'-_id -password -state -__v -role').exec((err, response) => {
             if (err) {
                 exceptionManager.connectionErrorData(result, 'User', err);
             }
