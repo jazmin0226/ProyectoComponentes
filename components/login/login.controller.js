@@ -1,6 +1,7 @@
 //Dependencies
 const exceptionManager = require('./../shared/exceptions.shared');
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 const UserModel = require('./../users/users.model');
 
 //Const
@@ -20,7 +21,8 @@ class LoginController {
         exceptionManager.badRequestData(result, name);
       }
 
-      const isValid = userValidate.comparePassword(body.password);
+     // const isValid = userValidate.comparePassword(body.password);
+     const isValid = bcrypt.compareSync(body.password, userValidate.password);
 
       if(!isValid){
         exceptionManager.forbiddenData(result, name);
@@ -28,9 +30,9 @@ class LoginController {
 
       delete userValidate.password;
 
-      //const token = jwt.sign({ user: userValidate }, 'hard_seed-code', { expiresIn: 14400 });
+      const token = jwt.sign({ user: userValidate }, 'hard_seed-code', { expiresIn: 14400 });
 
-      const data = {user : userValidate};
+      const data = {token, user : userValidate};
 
       exceptionManager.acceptedLoginData(result, data);
       
