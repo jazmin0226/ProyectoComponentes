@@ -9,13 +9,13 @@ const transporterService =nodemailer.createTransport({
   }
 });
 
-
-function sendEmail(sendData) {
+ 
+function sendEmail(sendData, callback) {
   const mailOptions = {
-    from: 'no-reply@componentes.com',
+    from: 'Proyecto componentes <foobar@example.com>',
     to: sendData.to,
     subject: sendData.subject,
-    text: sendData.text
+    html: sendData.html
   }
 
   transporterService.sendMail(mailOptions, (error, info) => {
@@ -23,7 +23,7 @@ function sendEmail(sendData) {
       console.error(error);
     }
 
-    console.log(info);
+    callback();
   });
 }
 
