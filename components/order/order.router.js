@@ -22,6 +22,7 @@ router.get('/statedelivered/:id', controller.getOrdersUserDelivered);
 router.get('/all/pending', controller.getOrdersAdminPending);
 router.get('/all/created', controller.getOrdersAdminCreated);
 router.get('/all/sent', controller.getOrdersAdminSent);
+router.get('/all/delivered', controller.getOrdersAdminDelivered);
 
 
 router.put('/updatestate/:id', controller.updateState);
